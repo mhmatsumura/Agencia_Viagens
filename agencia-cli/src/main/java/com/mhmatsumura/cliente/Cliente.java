@@ -4,6 +4,10 @@ public class Cliente {
     
     private long id;
     private String nome;
+
+    public Cliente(){
+
+    }
     
     private Cliente(long id, String nome) {
         this.id = id;

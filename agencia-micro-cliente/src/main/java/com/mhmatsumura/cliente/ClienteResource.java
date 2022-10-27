@@ -1,5 +1,7 @@
 package com.mhmatsumura.cliente;
 
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -14,6 +16,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
+import org.eclipse.microprofile.faulttolerance.Fallback;
+import org.eclipse.microprofile.faulttolerance.Timeout;
+
 @Path("/cliente")
 public class ClienteResource {
     
@@ -26,7 +32,16 @@ public class ClienteResource {
     @GET
     @Path("findById")
     @Produces(MediaType.APPLICATION_JSON)
-    public Cliente findById(@QueryParam("id") long id){
+    @Timeout(unit = ChronoUnit.MILLIS,value = 3000)
+    @Fallback(fallbackMethod = "fallback")
+    @CircuitBreaker(
+        requestVolumeThreshold = 4, //quantidade de requisições de referência
+        failureRatio = .5, // se 50% de requestVolumeThreshold falhar
+        delay = 6000, // aguarda 6 segundos após a falha
+        successThreshold = 1// taxa mínima de sucesso para religar o circuito de forma permanente
+    )
+    public Cliente findById(@QueryParam("id") long id) throws InterruptedException{
+        Thread.sleep(5000);
         return Cliente.findById(id);
     }
 
@@ -47,4 +62,10 @@ public class ClienteResource {
 
         return Response.status(Status.CREATED).entity(cliente).build();
     }
+
+    private Cliente fallback(long id){
+        return new Cliente();
+    } 
+
+    
 }

@@ -7,7 +7,7 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 
-@RegisterRestClient(baseUri = "http://localhost:8182/reserva")
+@RegisterRestClient(baseUri = "http://35.199.108.164/reserva")
 public interface ReservaService {
 
     @POST

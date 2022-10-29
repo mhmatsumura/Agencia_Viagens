@@ -1,5 +1,7 @@
 package com.mhmatsumura.cliente;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -15,6 +17,12 @@ public class ClienteResource {
     @Inject
     @RestClient
     ClienteService clienteService;
+
+    @GET
+    @Produces (MediaType.APPLICATION_JSON)
+    public List<Cliente> get(){
+        return clienteService.get();
+    }
 
     @GET
     @Path("findById")

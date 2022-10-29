@@ -32,14 +32,6 @@ public class ClienteResource {
     @GET
     @Path("findById")
     @Produces(MediaType.APPLICATION_JSON)
-    @Timeout(unit = ChronoUnit.MILLIS,value = 3000)
-    @Fallback(fallbackMethod = "fallback")
-    @CircuitBreaker(
-        requestVolumeThreshold = 4, //quantidade de requisições de referência
-        failureRatio = .5, // se 50% de requestVolumeThreshold falhar
-        delay = 6000, // aguarda 6 segundos após a falha
-        successThreshold = 1// taxa mínima de sucesso para religar o circuito de forma permanente
-    )
     public Cliente findById(@QueryParam("id") long id) throws InterruptedException{
         Thread.sleep(5000);
         return Cliente.findById(id);
@@ -63,9 +55,7 @@ public class ClienteResource {
         return Response.status(Status.CREATED).entity(cliente).build();
     }
 
-    private Cliente fallback(long id){
-        return new Cliente();
-    } 
+   
 
     
 }
